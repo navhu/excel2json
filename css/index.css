@@ -1,0 +1,16 @@
+body {
+    background-color: #EEE;
+    padding-top: 30px;
+}
+
+.panel {
+    margin-bottom: 0;
+}
+
+.btn-group {
+    margin: 20px 0;
+}
+
+textarea {
+    width: 100%;
+}
