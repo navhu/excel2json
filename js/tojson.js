@@ -1,6 +1,9 @@
 // 从excel中导出的数据
 var excel = [];
 
+// 省份函数变量
+var getProvFn = null;
+
 // 最终的json
 var jsonStr = '';
 
@@ -26,6 +29,18 @@ var getProvinces = function () {
     return pList;
 };
 
+// 获取省份(带id)
+var getProvincesAndId = function () {
+    var pList = [];
+    for (var i = 0; i < excel.length; i++) {
+        if (pList.indexOf(excel[i].province + '-' + excel[i].provinceId) === -1) {
+            pList.push(excel[i].province + '-' + excel[i].provinceId);
+        }
+    }
+    sortChinese(pList); // 会改变原数组
+    return pList;
+};
+
 // 获取城市
 var getCities = function (province) {
     var cList = [];
@@ -38,16 +53,36 @@ var getCities = function (province) {
     return cList;
 };
 
+// 获取城市(带id)
+var getCitiesAndId = function (province) {
+    var cList = [];
+    for (var i = 0; i < excel.length; i++) {
+        if (excel[i].province === province && cList.indexOf(excel[i].city + '-' + excel[i].cityId) === -1) {
+            cList.push(excel[i].city + '-' + excel[i].cityId);
+        }
+    }
+    sortChinese(cList); // 会改变原数组
+    return cList;
+};
+
+
 // 获取经销商
 var getDealers = function (city) {
     var dList = [];
     for (var i = 0; i < excel.length; i++) {
-        if (excel[i].city === city && dList.indexOf(excel[i].dealerName) === -1) {
-            // list.push(excel[i].dealer_name);
-            var tmp = {};
-            tmp.dealerCode = excel[i].dealerCode;
-            tmp.dealerName = excel[i].dealerName;
-            dList.push(tmp);
+        var flg = true;
+        for (var h = 0; h < dList.length; h++) {
+            if (excel[i].dealerName === dList[h].dealerName) {
+                flg = false;
+            }
+        }
+        if (excel[i].city === city && flg) {
+            dList.push({
+                dealerName: excel[i].dealerName,
+                dealerCode: excel[i].dealerCode
+                // proxyId: excel[i].proxyId,
+                // area: excel[i].area
+            });
         }
     }
     return dList;
@@ -106,7 +141,7 @@ var convert = function (cb) {
 
     // $('#result').val(html);
     excel = JSON.parse(html);
-    cb && cb(getProvinces());
+    cb && cb(getProvFn());
 };
 
 // 自定义json嵌套格式
@@ -146,7 +181,46 @@ var excel2json = function (list) {
     // console.log(jsonStr);
 };
 
-// excel2json(getProvinces());
+// 有id版
+var excel2json_hasId = function (list) {
+    var data = {};
+    data.mylist = [];
+
+    for (var i = 0; i < list.length; i++) {
+        data.mylist.push({
+            "p": list[i].split('-')[0],
+            "id": list[i].split('-')[1],
+            "c": []
+        });
+
+        var cityList = getCitiesAndId(list[i].split('-')[0]);
+
+        for (var j = 0; j < cityList.length; j++) {
+            data.mylist[i].c.push({
+                "n": cityList[j].split('-')[0],
+                "id": cityList[j].split('-')[1],
+                "a": []
+            });
+
+            var dealerList = getDealers(cityList[j].split('-')[0]);
+
+            for (var k = 0; k < dealerList.length; k++) {
+                data.mylist[i].c[j].a.push({
+                    "s": dealerList[k].dealerName,
+                    "id": dealerList[k].dealerCode
+                    // "pid": dealerList[k].proxyId,
+                    // "dq": dealerList[k].area
+                })
+            }
+
+        }
+
+    }
+
+    $('#result').val(JSON.stringify(data));
+    jsonStr = JSON.stringify(data);
+    // console.log(jsonStr);
+};
 
 // 下载文件方法
 var funDownload = function (content, filename) {
@@ -166,12 +240,35 @@ var funDownload = function (content, filename) {
 
 // 转换
 $('#go').click(function () {
-    convert(excel2json);
+    // 先获取radio值
+    var chooseType = $('.inlineRadio:checked').val();
+
+    // 然后相对应的进行转换
+    switch (chooseType) {
+        case 'noId':
+            console.log('执行：无id版');
+            getProvFn = null;
+            getProvFn = getProvinces;
+            convert(excel2json);
+            break;
+        case 'hasId':
+            console.log('执行：有id版');
+            getProvFn = null;
+            getProvFn = getProvincesAndId;
+            convert(excel2json_hasId);
+            break;
+        default:
+            console.log('执行默认操作：无id版');
+            getProvFn = null;
+            getProvFn = getProvinces;
+            convert(excel2json);
+    }
+
 });
 
 // 来个demo
 $("#demo").click(function () {
-    $("#content").val("province\tcity\tdealerName\tdealerCode\n安徽\t安庆\t安庆冠豪\t14835\n安徽\t安庆\t安庆乐瑞\t18104\n重庆\t重庆\t重庆力瑞\t17917\n重庆\t重庆\t重庆智鑫\t15417\n福建\t福州\t福建美捷\t10039\n福建\t厦门\t厦门昆祺\t18143\n甘肃\t白银\t白银瑞通\t18180\n甘肃\t兰州\t兰州良志\t10086");
+    $("#content").val("provinceId\tprovince\tcityId\tcity\tdealerName\tdealerCode\tproxyId\tarea\n500000\t重庆\t500100\t重庆市\t重庆商社公司\tS5002\t125\tRSD6\n500000\t重庆\t500100\t重庆市\t重庆众友公司\tS5012\t126\tRSD6\n500000\t重庆\t500100\t重庆市\t重庆长久公司\tS5014\t145\tRSD6\n510000\t四川\t510100\t成都市\t成都虹润公司\tS1007\t101\tRSD6\n510000\t四川\t510700\t绵阳市\t绵阳艾潇公司\tS1056\t185\tRSD6\n510000\t四川\t511100\t乐山市\t乐山天牛公司\tS1051\t475\tRSD6\n520000\t贵州\t520100\t贵阳市\t贵阳利和公司\tS2002\t120\tRSD6\n520000\t贵州\t520300\t遵义市\t遵义华众公司\tS2011\t136\tRSD6\n520000\t贵州\t520400\t安顺市\t安顺恒信公司\tS2005\t803\tRSD6\n530000\t云南\t530100\t昆明市\t昆明宇泰公司\tS3035\t157\tRSD6\n530000\t云南\t530300\t曲靖市\t曲靖云鑫公司\tS3015\t285\tRSD6\n530000\t云南\t530700\t丽江市\t丽江盛通公司\tS2001\t839\tRSD6\n610000\t陕西\t610100\t西安市\t西安东明公司\tS1013\t152\tRSD6\n610000\t陕西\t610600\t延安市\t延安亚泰公司\tS1027\t186\tRSD6\n610000\t陕西\t610300\t宝鸡市\t宝鸡威众公司\tS1028\t187\tRSD6\n620000\t甘肃\t620100\t兰州市\t兰州金岛公司\tS2002\t155\tRSD6\n620000\t甘肃\t620400\t白银市\t白银庞众公司\tS2009\t445\tRSD6\n620000\t甘肃\t620300\t金昌市\t金昌赛通公司\tS2001\t836\tRSD6");
 });
 
 // 清空

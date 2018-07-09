@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/my.bootstrap.min.css">
     <link rel="stylesheet" href="css/index.css">
-    <title>Document</title>
+    <title>excel转json - 广告工具</title>
 </head>
 <body>
 
@@ -23,7 +23,17 @@
                 <div class="panel-body">
                     <div>
                         <textarea id="content" class="form-control" rows="10" spellcheck="false"
-                                  placeholder="请在excel里复制内容然后粘贴到此处"></textarea>
+                                  placeholder="请在excel里复制内容然后粘贴到此处，key名和demo一致"></textarea>
+                    </div>
+
+                    <div class="wrap-radio clearfix">
+                        <p class="title-choose">请根据实际情况选择：</p>
+                        <label class="radio-inline">
+                            <input type="radio" name="inlineRadio" class="inlineRadio" value="noId" checked>无id版
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="inlineRadio" class="inlineRadio" value="hasId">有id版
+                        </label>
                     </div>
 
                     <div class="btn-group">
@@ -43,28 +53,26 @@
                     <button type="button" class="btn btn-success" id="download">保存为JSON文件</button>
                 </div>
             </div>
-
-            <!--模态框-->
-            <div class="modal fade" id="fail" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">提示</h4>
-                        </div>
-                        <div class="modal-body">
-                            oops！该浏览器不支持一键下载，你还是手动复制吧...
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 </div>
 
+<!--模态框-->
+<div class="modal fade" id="fail" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                oops！该浏览器不支持一键下载，你还是手动复制吧...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="js/jquery-3.3.1.slim.min.js"></script>
 <script src="js/my.bootstrap.min.js"></script>
