@@ -65,7 +65,6 @@ var getCitiesAndId = function (province) {
     return cList;
 };
 
-
 // 获取经销商
 var getDealers = function (city) {
     var dList = [];
@@ -147,10 +146,10 @@ var convert = function (cb) {
 // 自定义json嵌套格式
 var excel2json = function (list) {
     var data = {};
-    data.mylist = [];
+    data.citylist = [];
 
     for (var i = 0; i < list.length; i++) {
-        data.mylist.push({
+        data.citylist.push({
             "p": list[i],
             "c": []
         });
@@ -158,7 +157,7 @@ var excel2json = function (list) {
         var cityList = getCities(list[i]);
 
         for (var j = 0; j < cityList.length; j++) {
-            data.mylist[i].c.push({
+            data.citylist[i].c.push({
                 "n": cityList[j],
                 "a": []
             });
@@ -166,7 +165,7 @@ var excel2json = function (list) {
             var dealerList = getDealers(cityList[j]);
 
             for (var k = 0; k < dealerList.length; k++) {
-                data.mylist[i].c[j].a.push({
+                data.citylist[i].c[j].a.push({
                     "s": dealerList[k].dealerName,
                     "id": dealerList[k].dealerCode
                 })
@@ -184,10 +183,10 @@ var excel2json = function (list) {
 // 有id版
 var excel2json_hasId = function (list) {
     var data = {};
-    data.mylist = [];
+    data.citylist = [];
 
     for (var i = 0; i < list.length; i++) {
-        data.mylist.push({
+        data.citylist.push({
             "p": list[i].split('-')[0],
             "id": list[i].split('-')[1],
             "c": []
@@ -196,7 +195,7 @@ var excel2json_hasId = function (list) {
         var cityList = getCitiesAndId(list[i].split('-')[0]);
 
         for (var j = 0; j < cityList.length; j++) {
-            data.mylist[i].c.push({
+            data.citylist[i].c.push({
                 "n": cityList[j].split('-')[0],
                 "id": cityList[j].split('-')[1],
                 "a": []
@@ -205,7 +204,7 @@ var excel2json_hasId = function (list) {
             var dealerList = getDealers(cityList[j].split('-')[0]);
 
             for (var k = 0; k < dealerList.length; k++) {
-                data.mylist[i].c[j].a.push({
+                data.citylist[i].c[j].a.push({
                     "s": dealerList[k].dealerName,
                     "id": dealerList[k].dealerCode
                     // "pid": dealerList[k].proxyId,
@@ -281,6 +280,26 @@ $('#download').on('click', function () {
     if ('download' in document.createElement('a')) {
         funDownload(jsonStr, 'result.json');
     } else {
-        $('#fail').modal();
+        $('#toast').modal();
     }
+});
+
+// 模态框提示
+function toast(txt) {
+    $('#toast').find('.modal-body').text(txt).end().modal();
+}
+
+// 联动初始化
+$('#btn-init').click(function () {
+    if (!jsonStr) {
+        toast('无json数据');
+        return
+    }
+
+    var demoData = JSON.parse(jsonStr);
+    $(".wrap-demo").citySelect({
+        url: demoData,
+        nodata: null,
+        required: false
+    });
 });

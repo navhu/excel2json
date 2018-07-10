@@ -6,7 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css/my.bootstrap.min.css">
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/index.min.css">
     <title>excel转json - 广告工具</title>
 </head>
 <body>
@@ -53,12 +53,45 @@
                     <button type="button" class="btn btn-success" id="download">保存为JSON文件</button>
                 </div>
             </div>
+
+            <!--面板-->
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">效果预览</h3>
+                </div>
+
+                <div class="panel-body wrap-demo">
+                    <button id="btn-init" type="button" class="btn btn-block">初始化联动组件</button>
+
+                    <div class="demo-prov col-xs-4">
+                        <label for="prov">省份</label>
+                        <select id="prov" class="prov form-control">
+                            <option>- 请选择 -</option>
+                        </select>
+                    </div>
+
+                    <div class="demo-city col-xs-4">
+                        <label for="city">城市</label>
+                        <select id="city" class="city form-control">
+                            <option>- 请选择 -</option>
+                        </select>
+                    </div>
+
+                    <div class="demo-dealer col-xs-4">
+                        <label for="dealer">经销商</label>
+                        <select id="dealer" class="dist form-control">
+                            <option>- 请选择 -</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
 
 <!--模态框-->
-<div class="modal fade" id="fail" tabindex="-1">
+<div class="modal fade" id="toast" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -76,7 +109,8 @@
 
 <script src="js/jquery-3.3.1.slim.min.js"></script>
 <script src="js/my.bootstrap.min.js"></script>
-<script src="js/tojson.js"></script>
+<script src="js/cityselect.min.js"></script>
+<script src="js/tojson.min.js"></script>
 </body>
 </html>
 

@@ -59,3 +59,11 @@ textarea {
 .radio-inline {
     float: left;
 }
+
+.panel-success {
+    margin-top: 20px;
+}
+
+.btn-block {
+    margin-bottom: 20px;
+}
