@@ -79,7 +79,7 @@ var getDealers = function (city) {
             dList.push({
                 dealerName: excel[i].dealerName,
                 dealerCode: excel[i].dealerCode
-                // proxyId: excel[i].proxyId,
+                // proxyId: excel[i].proxyId, // TODO:这里
                 // area: excel[i].area
             });
         }
@@ -207,7 +207,7 @@ var excel2json_hasId = function (list) {
                 data.citylist[i].c[j].a.push({
                     "s": dealerList[k].dealerName,
                     "id": dealerList[k].dealerCode
-                    // "pid": dealerList[k].proxyId,
+                    // "pid": dealerList[k].proxyId, // TODO:这里
                     // "dq": dealerList[k].area
                 })
             }
